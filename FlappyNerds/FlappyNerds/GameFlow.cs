@@ -148,8 +148,8 @@ namespace FlappyNerds
                 birdYVol = 0;
             }
             
-            if ((birdX > pillarX[0]))
-                score++;
+           // if ((birdX > pillarX[0]))
+             //   score++;
 
             if ((birdX > pillarX[0]) && (birdX < pillarX[0] + 35) && ((birdY > pillarY[0]) || (birdY < pillarY[0] - gap)))
             {
@@ -157,6 +157,8 @@ namespace FlappyNerds
                 running = false;
                 GraphicsDevice.Clear(Color.CornflowerBlue);
             }
+            else if ((birdX > pillarX[0]))
+                score++;
 
             
                 if (((int)gameTime.TotalGameTime.TotalSeconds % 5 == 4) && (released == false))
