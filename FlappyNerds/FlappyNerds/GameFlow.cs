@@ -46,6 +46,7 @@ namespace FlappyNerds
         double[] pillarY = new double[3];
 
         bool released;
+        bool canScore = true;
 
         public GameFlow()
         {
@@ -148,14 +149,19 @@ namespace FlappyNerds
                 birdYVol = 0;
             }
             
-            if ((birdX > pillarX[0]))
-                score++;
+          //  if ((birdX > pillarX[0]))
+          //      score++;
 
             if ((birdX > pillarX[0]) && (birdX < pillarX[0] + 35) && ((birdY > pillarY[0]) || (birdY < pillarY[0] - gap)))
             {
                 //collision
                 running = false;
                 GraphicsDevice.Clear(Color.CornflowerBlue);
+            }
+            else if ((birdX > pillarX[0]) && canScore)
+            {
+                score++;
+                canScore = false;
             }
 
             
@@ -203,6 +209,7 @@ namespace FlappyNerds
 
             if (!running)
             {
+                canScore = true;
                 spriteBatch.Begin();
                 spriteBatch.DrawString(font, "Game over!", new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2), Color.White);
                 spriteBatch.End();
