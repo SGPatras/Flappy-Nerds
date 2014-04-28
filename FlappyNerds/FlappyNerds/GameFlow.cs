@@ -36,7 +36,7 @@ namespace FlappyNerds
 
         //the pillar X
         double[] pillarX = new double[3];
-        
+
         //stuff
         int gap = 150;
         int score;
@@ -70,11 +70,11 @@ namespace FlappyNerds
             // TODO: Add your initialization logic here
             GamePillar newGP = new GamePillar(this);
             birdYVol = 0;
-            
+
             pillarX[0] = GraphicsDevice.Viewport.Width;
             pillarX[1] = GraphicsDevice.Viewport.Width;
             pillarX[2] = GraphicsDevice.Viewport.Width;
-            
+
             pillarY[0] = GraphicsDevice.Viewport.Height;
             pillarY[1] = GraphicsDevice.Viewport.Height;
             pillarY[2] = GraphicsDevice.Viewport.Height;
@@ -96,7 +96,7 @@ namespace FlappyNerds
             released = false;
 
             Services.AddService(typeof(SpriteBatch), spriteBatch);
-            font =  Content.Load<SpriteFont>("GameFont");
+            font = Content.Load<SpriteFont>("GameFont");
         }
 
         /// <summary>
@@ -115,56 +115,60 @@ namespace FlappyNerds
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            ///store current position//////////////
             if (player.IsPlayerFound() && running)
             {
-            pillarX[0] += (velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
-            pillarX[1] += (velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
-            pillarX[2] += (velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
-            
-            // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
+                pillarX[0] += (velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                pillarX[1] += (velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                pillarX[2] += (velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
 
-            // TODO: Add your update logic here
-            if (!canFlap && player.GetLeftHandY() > player.GetHeadY() && player.GetRightHandY() > player.GetHeadY())
-                canFlap = true;
+                //// Allows the game to exit
+                //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+                //    this.Exit();
 
-            if (canFlap && player.GetLeftHandY() < player.GetHipY() && player.GetRightHandY() < player.GetHipY())
-            {
-                birdYVol = flapVol;
-                canFlap = false;
-            }
-            
-            birdY += birdYVol;
-            birdYVol += gravity;
+                if (!canFlap && player.GetLeftHandY() > player.GetHeadY() && player.GetRightHandY() > player.GetHeadY())
+                    canFlap = true;
 
-            if (birdY < 0)
-            {
-                birdY = 0;
-                birdYVol = 0;
-            }
-            else if (birdY > GraphicsDevice.Viewport.Height)
-            {
-                birdY = GraphicsDevice.Viewport.Height;
-                birdYVol = 0;
-            }
-            
-          //  if ((birdX > pillarX[0]))
-          //      score++;
 
-            if ((birdX > pillarX[0]) && (birdX < pillarX[0] + 35) && ((birdY > pillarY[0]) || (birdY < pillarY[0] - gap)))
-            {
-                //collision
-                running = false;
-                GraphicsDevice.Clear(Color.CornflowerBlue);
-            }
-            else if ((birdX > pillarX[0]) && canScore)
-            {
-                score++;
-                canScore = false;
-            }
+                // hands down///////////////////////////
+                if (canFlap && player.GetLeftHandY() < player.GetHipY() && player.GetRightHandY() < player.GetHipY())
+                {
+                    birdYVol = flapVol;
+                    canFlap = false;
+                }
 
-            
+                birdY += birdYVol; //
+                birdYVol += gravity; //ACCELERATE
+
+                if (birdY < 0)
+                {
+                    birdY = 0;
+                    birdYVol = 0;
+                }
+                else if (birdY > GraphicsDevice.Viewport.Height)
+                {
+                    birdY = GraphicsDevice.Viewport.Height;
+                    birdYVol = 0;
+                }
+
+                //if ((birdX > pillarX[0]))
+                //    score++;
+
+                if ((birdX > pillarX[0]) && (birdX < pillarX[0] + 35) && ((birdY > pillarY[0]) || (birdY < pillarY[0] - gap)))
+                {
+                    //collision
+                    running = false;
+                    score--;
+                    GraphicsDevice.Clear(Color.CornflowerBlue);
+                }
+                if ((birdX > pillarX[0]) && canScore)
+                {
+                    score++;
+                    canScore = false;
+                }
+
+
+
                 if (((int)gameTime.TotalGameTime.TotalSeconds % 5 == 4) && (released == false))
                 {
                     GamePillar newGP = new GamePillar(this);
@@ -173,7 +177,7 @@ namespace FlappyNerds
                     pillarX[0] = pillarX[1]; pillarX[1] = pillarX[2]; pillarX[2] = newGP.getX();
                     pillarY[0] = pillarY[1]; pillarY[1] = pillarY[2]; pillarY[2] = newGP.getY();
 
-
+                    canScore = true;
                     released = true;
                 }
 
@@ -209,7 +213,6 @@ namespace FlappyNerds
 
             if (!running)
             {
-                canScore = true;
                 spriteBatch.Begin();
                 spriteBatch.DrawString(font, "Game over!", new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2), Color.White);
                 spriteBatch.End();
